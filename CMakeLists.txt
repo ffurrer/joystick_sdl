@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(joystick_sdl)
 
-find_package(catkin REQUIRED COMPONENTS diagnostic_updater roscpp roslib sensor_msgs)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+find_package(catkin_simple REQUIRED)
+catkin_simple(ALL_DEPS_REQUIRED)
 
 include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)
@@ -15,35 +18,20 @@ catkin_package(
 )
 
 include_directories(
-  include
   ${SDL2_INCLUDE_DIRS}
-  ${CATKIN_INCLUDE_DIRS}
 )
 
-add_library(${PROJECT_NAME} src/joystick)
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${catkin_LIBRARIES})
+cs_add_library(${PROJECT_NAME} src/joystick.cpp)
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 if(SDL204_FOUND)
   set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_DEFINITIONS SDL2_ENABLE_JOYSTICK_POWER_LEVEL)
 endif()
 
-add_executable(${PROJECT_NAME}_node src/joystick_node)
-target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME} ${SDL2_LIBRARIES} ${catkin_LIBRARIES})
+cs_add_executable(${PROJECT_NAME}_node src/joystick_node.cpp)
+target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME} ${SDL2_LIBRARIES})
 
-install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+cs_install()
+cs_export()
 
 install(DIRECTORY mappings
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-
-if (CATKIN_ENABLE_TESTING)
-  find_package(roslint REQUIRED)
-
-  roslint_cpp()
-  roslint_add_test()
-endif()
-
