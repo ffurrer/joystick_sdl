@@ -26,9 +26,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #include "SDL.h"
 #include <string>
 
-#include "diagnostic_updater/diagnostic_updater.h"
-#include "ros/ros.h"
-#include "sensor_msgs/Joy.h"
+#include <diagnostic_updater/diagnostic_updater.h>
+#include <ros/ros.h>
+#include <sensor_msgs/Joy.h>
 
 #include "joystick_sdl/joystick.h"
 
